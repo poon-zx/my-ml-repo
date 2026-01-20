@@ -1,0 +1,24 @@
+---
+title: "Attention Is All You Need"
+date: "2017-06-12"
+summary: "Why self-attention scales and the Transformer replaced recurrence."
+tags: ["transformer", "attention", "sequence-models"]
+---
+
+# Key ideas
+
+- Replace recurrence with multi-head self-attention.
+- Keep position information via sinusoidal encodings.
+- Use residual connections plus layer norm around each sublayer.
+
+# Quick refresher
+
+Self-attention computes weighted averages over tokens. Each head learns its own
+projection of keys, queries, and values. Concatenate the heads, project back.
+
+<AttentionDemo />
+
+# Notes
+
+The paper argues that attention layers are more parallelizable and capture long
+range dependencies with fewer sequential operations than RNNs.
