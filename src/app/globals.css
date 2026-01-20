@@ -474,6 +474,7 @@ img {
 .note-content {
   margin-top: 24px;
   line-height: 1.7;
+  font-size: 1.04em;
   color: var(--ink-700);
 }
 
@@ -491,16 +492,45 @@ img {
 }
 
 .note-content pre {
-  background: rgba(26, 20, 14, 0.92);
-  color: #f8f0e6;
-  padding: 16px;
-  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    rgba(239, 225, 209, 0.96),
+    rgba(228, 211, 193, 0.96)
+  );
+  color: #2b2218;
+  padding: 18px 20px;
+  border-radius: 14px;
+  border: 1px solid rgba(115, 85, 56, 0.25);
+  box-shadow: 0 14px 28px rgba(59, 42, 25, 0.12);
   overflow-x: auto;
 }
 
 .note-content pre code {
   background: transparent;
   padding: 0;
+}
+
+.note-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.note-content th,
+.note-content td {
+  border: 1px solid var(--border);
+  padding: 12px 14px;
+  vertical-align: top;
+}
+
+.note-content th {
+  text-align: left;
+  color: var(--ink-900);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.note-content tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .attention-demo {

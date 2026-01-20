@@ -1,0 +1,59 @@
+---
+title: "Single Neuron with Backpropagation"
+date: "20-01-2026"
+summary: "Train a single sigmoid neuron end-to-end with manual gradients."
+tags: ["backpropagation", "sigmoid", "gradient-descent", "mse-loss"]
+---
+
+# Problem
+
+Implement the full training loop for a single sigmoid neuron. Given features, labels, initial weights, bias, a learning rate, and epoch count, perform forward passes, compute mean squared error, backpropagate analytic gradients for weights and bias, and update parameters each step. Return the final rounded parameters and a history of MSE values per epoch for quick plotting or inspection.
+
+# Code
+
+```python
+import numpy as np
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def train_neuron(features: np.ndarray, labels: np.ndarray, initial_weights: np.ndarray, initial_bias: float, learning_rate: float, epochs: int) -> (np.ndarray, float, list[float]):
+    weights = np.array(initial_weights)
+    bias = initial_bias
+    features = np.array(features)
+    labels = np.array(labels)
+    mse_values = []
+
+    for _ in range(epochs):
+        z = np.dot(features, weights) + bias
+        predictions = sigmoid(z)
+        mse = np.mean((predictions - labels) ** 2)
+        mse_values.append(round(mse, 4))
+
+        # Gradient calculation for weights and bias
+        errors = predictions - labels
+        weight_gradients = (2 / len(labels)) * np.dot(features.T, errors * predictions * (1 - predictions))
+
+        bias_gradient = (2 / len(labels)) * np.sum(errors * predictions * (1 - predictions))
+
+        # Update weights and bias
+        weights -= learning_rate * weight_gradients
+        bias -= learning_rate * bias_gradient
+
+        updated_weights = np.round(weights, 4)
+        updated_bias = round(bias, 4)
+
+    return updated_weights, updated_bias, mse_values
+```
+
+# Notes
+
+- Forward pass: $z = Xw + b$; predictions $\hat{y} = \sigma(z) = \frac{1}{1 + e^{-z}}$.
+- Loss (per epoch): mean squared error $\mathrm{MSE} = \frac{1}{N}\sum_i (\hat{y}_i - y_i)^2$.
+- Gradients:
+  - Error term $e = \hat{y} - y$.
+  - Sigmoid derivative $\sigma'(z) = \hat{y}(1 - \hat{y})$.
+  - Chain rule: multiply the residual by the local derivative before projecting: $e \odot \sigma'(z)$ is what feeds both parameter gradients.
+  - Weight gradient $\nabla_w = \frac{2}{N} X^\top \bigl(e \odot \sigma'(z)\bigr)$.
+  - Bias gradient $\nabla_b = \frac{2}{N}\sum_i e_i\, \sigma'(z_i)$.
+- Update rule per epoch: $w \leftarrow w - \eta \nabla_w$, $b \leftarrow b - \eta \nabla_b$ where $\eta$ is the learning rate.

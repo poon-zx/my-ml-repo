@@ -1,0 +1,46 @@
+---
+title: "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale"
+date: "20-01-2025"
+summary: "Vision Transformer (ViT) replaces convolutions with a pure Transformer encoder over image patches, using a learnable [class] token and minimal inductive bias to achieve strong image recognition performance at scale."
+tags: ["transformer", "attention"]
+---
+
+# Key ideas
+
+
+# Key Definitions
+
+| Term | Definition |
+| --- | --- |
+| Inductive Bias | - Assumptions a learning algorithm makes to predict outputs given inputs it hasn’t encountered before.<br />- Vision Transformers (ViT) have significantly less image-specific inductive bias compared to Convolutional Neural Networks (CNNs).<br />- In CNNs, inductive biases include locality (considering only nearby pixel relationships), two-dimensional neighborhood structure, and translation equivariance (the ability to recognize objects regardless of their position in the image), which are inherently integrated into each layer throughout the model.<br />- In contrast, in ViT, only the Multi-Layer Perceptron (MLP) layers exhibit locality and translation equivariance, while the self-attention layers operate globally. |
+| Translation Equivariance | - Property of a system where translating the input (e.g., shifting an image to the left or right) results in an equivalent translation of the output.<br />- CNNs naturally possess translation equivariance, meaning they can recognize objects regardless of their position in an image. This property is embedded within the convolution operations of CNNs.<br />- In Vision Transformers, this is not inherently present in the self-attention mechanism, and such properties must be learned from the data during training. |
+| Locality | - Locality refers to focusing on local features or small regions of the input data, which is a characteristic behavior of convolutional layers in CNNs.<br />- In Vision Transformers, locality is not inherently enforced in the self-attention layers as it is in CNNs.<br />- CNNs process local neighborhoods of pixels at each layer, while Vision Transformers process the entire image at once, making their self-attention global rather than local.<br />- Locality can be introduced in ViTs through MLP layers which operate locally and are translationally equivariant.<br />- This shift from local to global processing is one of the main differences in how these two architectures handle image data. |
+| Patches | - Instead of processing an entire image as a whole, the ViT model divides the image into fixed-size patches. Each patch is treated similarly to a token in NLP.<br />- An image of size $H \times W \times C$ (height, width, channels) is split into a grid of patches, each of size $P \times P$. This results in $N = HW / P^2$ patches.<br />- Each patch is flattened and linearly projected into a vector of a fixed dimension, referred to as the patch embedding.<br />- This linear projection maps the $P \times P \times C$ pixels of each patch to a $D$-dimensional vector, where $D$ is the latent vector size of the Transformer. |
+| Position Embeddings | - Since the Transformer model is permutation-invariant and does not inherently encode the spatial structure of the input, position embeddings are added to provide information about the positions of patches within the original image.<br />- Learnable position embeddings are added to the patch embeddings. These position embeddings are vectors that are learned during training and are added to the patch embeddings to retain information about the patch’s position in the original image.<br />- The standard implementation uses 1D learnable position embeddings, which are added to the sequence of patch embeddings. |
+| Extra Learnable Embeddings: [class] token | - Similar to the [CLS] token in BERT for NLP, an additional learnable embedding, referred to as the “classification token” ([class] token), is prepended to the sequence of patch embeddings.<br />- The state of this [class] token at the output of the Transformer encoder serves as the final image representation.<br />- During pre-training and fine-tuning, a classification head (typically an MLP with one hidden layer) is attached to this [class] token for predicting the class of the image. |
+| Classification Head | - A head attached to the Transformer encoder’s output that converts the representation into a class prediction.<br />- During the pre-training phase, it is usually an MLP with one hidden layer to allow the model to learn more complex representations.<br />- During fine-tuning, it is often replaced by a linear layer to reduce computational complexity and speed up training, as the model has already learned a rich set of features. |
+
+
+# Model Architecture
+
+![Vision Transformer (ViT) model overview](/papers/vit/ViT.png)
+
+*Figure: ViT splits an image into fixed-size patches, embeds them with position info, and feeds them through a Transformer encoder; a learnable class token is used for classification.*
+
+- **Input Processing**
+  - Split the input image into fixed-size patches.
+  - Flatten and linearly project each patch to create patch embeddings.
+  - Add learnable position embeddings to the patch embeddings.
+  - Prepend the `[class]` token to the sequence of patch embeddings.
+
+- **Transformer Encoder**
+  - Feed the sequence of patch embeddings (with position embeddings added and the `[class]` token prepended) into a standard Transformer encoder.
+  - Use alternating layers of multi-headed self-attention and MLP blocks.
+  - Apply Layer Normalization (LN) before every block and residual connections after every block.
+  - Take the output corresponding to the `[class]` token from the final encoder layer as the image representation for classification.
+
+- **Classification Head**
+  - Attach a classification head to the final `[class]` token representation.
+  - Use an MLP with one hidden layer during pre-training.
+  - Use a single linear layer during fine-tuning.
+  - Produce the final class probabilities or logits from this head.

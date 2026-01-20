@@ -9,6 +9,13 @@ export default function ProblemsPage() {
       <header className="section-header">
         <h1>ML coding problems</h1>
         <p>Interesting problems and the solutions I want to revisit.</p>
+        <p className="muted">
+          Credit: many problems are adapted from{" "}
+          <a href="https://www.deep-ml.com/" target="_blank" rel="noreferrer">
+            Deep-ML
+          </a>
+          .
+        </p>
       </header>
 
       {problems.length === 0 ? (

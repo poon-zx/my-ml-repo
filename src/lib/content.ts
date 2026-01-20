@@ -3,6 +3,9 @@ import path from "node:path";
 import matter from "gray-matter";
 import { compileMDX } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import rehypePrettyCode from "rehype-pretty-code";
 import { mdxComponents } from "@/components/mdx-components";
 
 const CONTENT_ROOT = path.join(process.cwd(), "content");
@@ -80,7 +83,17 @@ export async function getNoteBySlug(collection: Collection, slug: string) {
     components: mdxComponents,
     options: {
       mdxOptions: {
-        remarkPlugins: [remarkGfm],
+        remarkPlugins: [remarkGfm, remarkMath],
+        rehypePlugins: [
+          rehypeKatex,
+          [
+            rehypePrettyCode,
+            {
+              theme: "vitesse-light",
+              keepBackground: false,
+            },
+          ],
+        ],
       },
     },
   });

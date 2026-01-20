@@ -6,6 +6,7 @@ import {
   Space_Mono,
 } from "next/font/google";
 import "./globals.css";
+import "katex/dist/katex.min.css";
 
 const bodyFont = Source_Sans_3({
   variable: "--font-body",
