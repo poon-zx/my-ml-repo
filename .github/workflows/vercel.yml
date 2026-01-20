@@ -30,7 +30,7 @@ jobs:
 
       - name: Deploy Preview to Vercel
         if: github.event_name == 'pull_request'
-        uses: vercel/action@v3
+        uses: vercel/action@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-token: ${{ env.VERCEL_TOKEN }}
@@ -41,7 +41,7 @@ jobs:
 
       - name: Deploy Production to Vercel
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: vercel/action@v3
+        uses: vercel/action@v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-token: ${{ env.VERCEL_TOKEN }}
