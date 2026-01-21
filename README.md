@@ -1,7 +1,5 @@
 # my-ml-repo
 
-ML notes, writeups, and small interactive demos, built with [Next.js](https://nextjs.org) and MDX content.
+ML notes, writeups, and small interactive demos. These are meant for personal learning and acts as a reference for future revision.
 
-- **Content**: `content/papers/*.mdx`, `content/problems/*.mdx`
-- **Routes**: `/papers`, `/papers/[slug]`, `/problems`
-
+https://poon-ml-repo.vercel.app/
