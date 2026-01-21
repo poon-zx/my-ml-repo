@@ -566,6 +566,99 @@ img {
   font-size: 0.9rem;
 }
 
+.patch-demo-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+  color: var(--ink-700);
+  font-size: 0.9rem;
+}
+
+.patch-demo-preview {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.patch-demo-grid {
+  width: 160px;
+  height: 160px;
+  display: grid;
+  gap: 2px;
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(151, 115, 75, 0.08);
+}
+
+.patch-demo-cell {
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: rgba(151, 115, 75, 0.22);
+  border-radius: 4px;
+}
+
+.patch-demo-cell.is-active {
+  background: rgba(151, 115, 75, 0.65);
+  box-shadow: 0 0 0 2px rgba(151, 115, 75, 0.35);
+}
+
+.patch-demo-cell:focus-visible {
+  outline: 2px solid rgba(151, 115, 75, 0.55);
+  outline-offset: 2px;
+}
+
+.patch-demo-class {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px dashed rgba(151, 115, 75, 0.45);
+  background: rgba(151, 115, 75, 0.12);
+  font-size: 0.85rem;
+}
+
+.patch-demo-embedding {
+  min-width: 180px;
+  flex: 1 1 180px;
+}
+
+.patch-demo-embedding-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.patch-demo-embedding-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.patch-demo-embedding-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.patch-demo-embedding-label {
+  font-size: 0.8rem;
+  color: var(--ink-600);
+}
+
+.patch-demo-embedding-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(151, 115, 75, 0.45);
+}
+
+.patch-demo-embedding-value {
+  font-size: 0.8rem;
+  color: var(--ink-600);
+}
+
 .empty-state {
   color: var(--ink-500);
   font-style: italic;
