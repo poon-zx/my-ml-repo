@@ -29,7 +29,7 @@ export default function Home() {
             </Link>
           </div>
           <div className="home-status" aria-hidden="true">
-            <span>Thinking</span>
+            <span>Backfilling</span>
             <span className="thinking-dots">
               <span />
               <span />

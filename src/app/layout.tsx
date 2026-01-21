@@ -30,8 +30,8 @@ export const metadata: Metadata = {
   description:
     "A personal repository of ML paper notes, code snippets, and ML coding problems.",
   icons: {
-    icon: "/6611847.png",
-    apple: "/6611847.png",
+    icon: "/paper.png",
+    apple: "/paper.png",
   },
 };
 
