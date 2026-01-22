@@ -1,0 +1,106 @@
+---
+title: "Activation Functions"
+date: "22-01-2026"
+summary: "Overview of common activation functions with their mathematical equations, derivatives, and Python implementations."
+tags: ["activation-functions", "neural-networks", "deep-learning"]
+---
+
+## Sigmoid
+
+![Sigmoid](/problems/activation/sigmoid.png)
+*Image Credits: https://www.geeksforgeeks.org/machine-learning/derivative-of-the-sigmoid-function/*
+
+- Mathematical function that maps any real-valued number into a value between 0 and 1
+- Non-linear activation function that improves model performance as it gains the ability to handle non-linearity
+
+Equation:
+$$\sigma(x) = \frac{1}{1 + e^{-x}}$$
+
+Derivative:
+$$\sigma'(x) = \sigma(x)(1 - \sigma(x))$$
+
+
+```python
+import math
+
+def sigmoid(z: float) -> float:
+    result = 1 / (1 + math.exp(-1 * z))
+    return round(result, 4)
+```
+
+## Softmax
+
+- Mathematical function that converts a vector of real-valued scores into a probability distribution
+- Generalization of sigmoid to multiple classes, ensuring all outputs sum to 1
+- Non-linear activation function commonly used in the output layer for multi-class classification
+
+Equation:
+
+$$\text{softmax}(x_i) = \frac{e^{x_i}}{\sum_{j=1}^{n} e^{x_j}}$$
+
+Derivative:
+
+For the softmax function, the partial derivative with respect to element $x_i$ is:
+
+When $i = j$:
+$$\frac{\partial \text{softmax}(x_i)}{\partial x_j} = \text{softmax}(x_i)(1 - \text{softmax}(x_i))$$
+
+When $i \neq j$:
+$$\frac{\partial \text{softmax}(x_i)}{\partial x_j} = -\text{softmax}(x_i) \cdot \text{softmax}(x_j)$$
+
+```python
+import math
+import numpy as np
+
+def softmax(scores: list[float]) -> list[float]:
+    scores_np = np.array(scores)
+    probabilities = np.exp(scores_np) / np.sum(np.exp(scores_np))
+    return probabilities.tolist()
+```
+
+## ReLU (Rectified Linear Unit)
+
+- Simple activation function that outputs the input directly if it is positive, otherwise outputs zero
+- Addresses the vanishing gradient problem common in sigmoid and tanh functions
+- Computationally efficient and helps with sparse activations in deep networks
+
+Equation:
+$$\text{ReLU}(x) = \max(0, x)$$
+
+Derivative:
+
+When $x > 0$:
+$$\text{ReLU}'(x) = 1$$
+
+When $x \leq 0$:
+$$\text{ReLU}'(x) = 0$$
+
+```python
+def relu(x: float) -> float:
+   return max(0.0, x)
+```
+
+## Leaky ReLU
+
+- Variant of ReLU that allows a small, non-zero gradient when the input is negative
+- Addresses the "dying ReLU" problem where neurons can become inactive and stop learning
+- Uses a small positive slope (typically 0.01) for negative inputs instead of zero
+- Non-linear activation function that maintains gradient flow even for negative inputs
+
+Equation:
+$$\text{LeakyReLU}(x) = \max(\alpha x, x)$$
+
+where $\alpha$ is a small positive constant (typically 0.01).
+
+Derivative:
+
+When $x > 0$:
+$$\text{LeakyReLU}'(x) = 1$$
+
+When $x \leq 0$:
+$$\text{LeakyReLU}'(x) = \alpha$$
+
+```python
+def leaky_relu(x: float, alpha: float = 0.01) -> float:
+    return max(alpha * x, x)
+```
