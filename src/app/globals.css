@@ -1006,6 +1006,133 @@ img {
   font-style: italic;
 }
 
+.gan-demo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 8px 0 16px;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+}
+
+.gan-demo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.gan-demo-button {
+  border: 1px solid rgba(151, 115, 75, 0.35);
+  border-radius: 999px;
+  background: rgba(151, 115, 75, 0.15);
+  color: var(--ink-900);
+  padding: 8px 14px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.gan-demo-button.is-ghost {
+  background: transparent;
+}
+
+.gan-demo-button:hover {
+  background: rgba(151, 115, 75, 0.25);
+}
+
+.gan-demo-readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 10px 0 12px;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+}
+
+.gan-demo-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.gan-demo-badge {
+  border: 1px solid rgba(151, 115, 75, 0.35);
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: rgba(151, 115, 75, 0.12);
+  font-size: 0.8rem;
+  color: var(--ink-700);
+}
+
+.gan-demo-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.gan-demo-metric {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  color: var(--ink-700);
+}
+
+.gan-demo-metric h4 {
+  margin: 0 0 6px;
+  font-size: 0.9rem;
+  color: var(--ink-900);
+}
+
+.gan-demo-strip {
+  display: grid;
+  gap: 10px;
+}
+
+.gan-demo-row {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+}
+
+.gan-demo-track {
+  position: relative;
+  height: 20px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(151, 115, 75, 0.08);
+}
+
+.gan-demo-dot {
+  position: absolute;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+}
+
+.gan-demo-dot.is-real {
+  background: rgba(151, 115, 75, 0.85);
+}
+
+.gan-demo-dot.is-fake {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(151, 115, 75, 0.7);
+}
+
+.gan-demo-range {
+  font-size: 0.8rem;
+  color: var(--ink-600);
+  text-align: right;
+}
+
 .empty-state {
   color: var(--ink-500);
   font-style: italic;
