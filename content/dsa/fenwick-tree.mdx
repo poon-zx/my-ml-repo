@@ -1,0 +1,153 @@
+---
+title: "Fenwick Trees"
+date: "22-01-2025"
+summary: "Fenwick Trees enable efficient range sum queries and point updates in O(log n) time by storing partial sums based on binary index patterns."
+tags: ["fenwick-tree", "prefix-sums", "range-queries"]
+---
+
+## The Problem
+Suppose you have an array of numbers and need to support two operations:
+
+1. Query: Find the sum of elements from index l to r
+2. Update: Change the value at a specific index
+
+The naive approaches each have a significant drawback:
+- Using a simple array: Updating an element is O(1) - just change the value. But calculating a range sum requires iterating through all elements in the range, taking O(n) time in the worst case.
+- Using a prefix sum array: Range queries become O(1) by computing prefix[r] - prefix[l-1]. But now updates are O(n) because changing a single element requires recalculating all prefix sums after that position.
+
+We're stuck with a tradeoff: either queries or updates will be slow. Fenwick Trees solve this by supporting both operations in **O(log n)** time.
+
+## Fenwick Trees
+- Instead of storing raw values or complete prefix sums, the tree stores partial sums for specific ranges, where the range size is determined by the rightmost set bit (1) in the index's binary representation
+  - For an index `i`, the value `i & -i` gives the rightmost set bit
+  - The tree at index `i` stores the sum of elements from positions `(i - (i & -i) + 1)` through `i` in the original array
+  - Some examples:
+    - Index 8 (binary 1000): `8 & -8 = 8`, so it stores the sum of 8 elements from positions 1 to 8
+    - Index 6 (binary 0110): `6 & -6 = 2`, so it stores the sum of 2 elements from positions 5 to 6
+
+## Prefix Sum
+- When computing a prefix sum up to position `i`, we traverse backwards by repeatedly removing the rightmost set bit (`i -= i & -i`), accumulating sums from these overlapping ranges
+- Example of finding prefix sum at index 7 (binary `0111`):
+  - **Step 1**: Start at index 7 (binary `0111`)
+    - `7 & -7 = 1`, so `tree[7]` covers 1 element (position 7)
+    - `sum = tree[7]`
+    - Next: `7 - 1 = 6`
+  - **Step 2**: Move to index 6 (binary `0110`)
+    - `6 & -6 = 2`, so `tree[6]` covers 2 elements (positions 5-6)
+    - `sum = tree[7] + tree[6]`
+    - Next: `6 - 2 = 4`
+  - **Step 3**: Move to index 4 (binary `0100`)
+    - `4 & -4 = 4`, so `tree[4]` covers 4 elements (positions 1-4)
+    - `sum = tree[7] + tree[6] + tree[4]`
+    - Next: `4 - 4 = 0`
+  - **Step 4**: Reached 0, stop
+
+## Update
+- When updating the value at position `i` by adding `diff`, we traverse forwards by repeatedly adding the rightmost set bit (`i += i & -i`), updating all tree nodes that include this position in their range
+- Example of updating index 3 (binary `0011`) with a difference `diff`:
+  - **Step 1**: Start at index 3 (binary `0011`)
+    - `3 & -3 = 1`, so `tree[3]` covers 1 element (position 3)
+    - `tree[3] += diff`
+    - Next: `3 + 1 = 4`
+  - **Step 2**: Move to index 4 (binary `0100`)
+    - `4 & -4 = 4`, so `tree[4]` covers 4 elements (positions 1-4), which includes position 3
+    - `tree[4] += diff`
+    - Next: `4 + 4 = 8`
+  - **Step 3**: Move to index 8 (binary `1000`)
+    - `8 & -8 = 8`, so `tree[8]` covers 8 elements (positions 1-8), which includes position 3
+    - `tree[8] += diff`
+    - Next: `8 + 8 = 16`
+  - Continue until index exceeds array size `n`
+
+## Playground: Prefix sums + updates
+
+<FenwickTreeDemo />
+
+Use the sliders to pick a prefix index or update index, then run the action to
+see which `tree[i]` entries are touched. The highlights correspond to the
+`i -= i & -i` and `i += i & -i` traversals described above.
+
+## Summary of Core Operations
+- Construction from an existing array can be done in O(n) using a bottom-up approach
+  - Each element first copies its value then propagates it to its parent node by adding it to `tree[i + (i & -i)]`
+- Prefix sum queries run in O(log n) time
+  - The number of iterations equals the number of set bits in the binary representation of i, which is at most log n
+- Range Sum queries are computed as `prefix(r) - prefix(l-1)`, taking O(log n) time
+- Point Updates also run in O(log n)
+
+## When to use Fenwick Trees
+- Fenwick Trees excel at problems requiring frequent queries and updates on cumulative data
+- Example question: https://open.kattis.com/problems/fenwick
+
+## Code (C++)
+```cpp
+class FenwickTree {
+ public:
+  FenwickTree(int n) : n(n), tree(n + 1, 0LL) {}
+
+  FenwickTree(std::vector<ll>& data): FenwickTree(data.size()) {
+    for (int i = 1; i <= n; ++i) {
+        tree[i] = data[i-1];
+        int parent = i + (i & -i);
+        if (parent <= n) {
+            tree[parent] += tree[i];
+        }
+    }
+  }
+
+  int query(int l, int r) const { return prefix(r) - prefix(l-1); }
+
+  void update(int i, ll diff) {
+    for (; i <= n; i += i & -i) {
+      tree[i] += diff;
+    }
+  }
+
+  ll prefix(int i) const {
+    ll sum = 0;
+    for (; i > 0; i -= i & -i) {
+      sum += tree[i];
+    }
+    return sum;
+  }
+
+  private:
+  const int n;
+  std::vector<ll> tree;
+};
+```
+
+## Code (Python)
+```python
+class FenwickTree:
+    def __init__(self, n_or_data):
+        if isinstance(n_or_data, int):
+            self.n = n_or_data
+            self.tree = [0] * (self.n + 1)
+        else:
+            # Initialize from list
+            data = n_or_data
+            self.n = len(data)
+            self.tree = [0] * (self.n + 1)
+            
+            for i in range(1, self.n + 1):
+                self.tree[i] = data[i - 1]
+                parent = i + (i & -i)
+                if parent <= self.n:
+                    self.tree[parent] += self.tree[i]
+    
+    def query(self, l, r):
+        return self.prefix(r) - self.prefix(l - 1)
+    
+    def update(self, i, diff):
+        while i <= self.n:
+            self.tree[i] += diff
+            i += i & -i
+    
+    def prefix(self, i):
+        total = 0
+        while i > 0:
+            total += self.tree[i]
+            i -= i & -i
+        return total
+```

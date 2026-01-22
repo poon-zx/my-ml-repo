@@ -10,7 +10,7 @@ import { mdxComponents } from "@/components/mdx-components";
 
 const CONTENT_ROOT = path.join(process.cwd(), "content");
 
-export type Collection = "papers" | "problems";
+export type Collection = "papers" | "problems" | "dsa";
 
 export type NoteFrontmatter = {
   title: string;

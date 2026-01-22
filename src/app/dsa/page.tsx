@@ -1,0 +1,45 @@
+import Link from "next/link";
+import { getAllNotes } from "@/lib/content";
+
+export default function DsaPage() {
+  const problems = getAllNotes("dsa");
+
+  return (
+    <section className="section">
+      <header className="section-header">
+        <h1>DSA/CP problems</h1>
+        <p>
+          Found my old codeforces code templates
+        </p>
+      </header>
+
+      {problems.length === 0 ? (
+        <p className="empty-state">
+          No DSA/CP problems yet. Add a markdown file in `content/dsa` to get
+          started.
+        </p>
+      ) : (
+        <div className="note-list">
+          {problems.map((problem) => (
+            <article key={problem.slug} className="note-card">
+              <div>
+                <h2>
+                  <Link className="note-link" href={`/dsa/${problem.slug}`}>
+                    {problem.title}
+                  </Link>
+                </h2>
+                {problem.summary && <p>{problem.summary}</p>}
+              </div>
+              <div className="note-meta">
+                {problem.date && <span>{problem.date}</span>}
+                {problem.tags?.length ? (
+                  <span>{problem.tags.join(" · ")}</span>
+                ) : null}
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}

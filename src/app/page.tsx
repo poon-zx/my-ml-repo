@@ -4,6 +4,7 @@ import { getAllNotes } from "@/lib/content";
 export default function Home() {
   const papers = getAllNotes("papers");
   const problems = getAllNotes("problems");
+  const dsaProblems = getAllNotes("dsa");
 
   return (
     <section className="home">
@@ -24,7 +25,10 @@ export default function Home() {
               Browse papers
             </Link>
             <Link className="button button-outline" href="/problems">
-              See coding problems
+              See ML problems
+            </Link>
+            <Link className="button button-outline" href="/dsa">
+              DSA/CP problems
             </Link>
           </div>
           <div className="home-status" aria-hidden="true">
@@ -41,8 +45,12 @@ export default function Home() {
               <dd className="stat-value">{papers.length}</dd>
             </div>
             <div>
-              <dt>Problems</dt>
+              <dt>ML problems</dt>
               <dd className="stat-value">{problems.length}</dd>
+            </div>
+            <div>
+              <dt>DSA/CP</dt>
+              <dd className="stat-value">{dsaProblems.length}</dd>
             </div>
           </dl>
         </div>
@@ -98,10 +106,40 @@ export default function Home() {
               />
             </svg>
           </div>
-          <h2>Problems</h2>
+          <h2>ML Problems</h2>
           <p>
             Interview-style ML coding tasks, my solutions, and notes on edge
             cases.
+          </p>
+        </Link>
+        <Link className="home-card home-card-dsa home-card-link" href="/dsa">
+          <div className="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none">
+              <path
+                d="M20 14L10 24l10 10"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M28 14l10 10-10 10"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M26 14l-4 20"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+            </svg>
+          </div>
+          <h2>DSA/CP</h2>
+          <p>
+            Data structures and algorithms for interviews and competitive programming.
           </p>
         </Link>
       </div>

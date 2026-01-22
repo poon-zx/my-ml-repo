@@ -52,7 +52,8 @@ export default function RootLayout({
             </div>
             <nav className="site-nav">
               <Link href="/papers">Papers</Link>
-              <Link href="/problems">Problems</Link>
+              <Link href="/problems">ML Problems</Link>
+              <Link href="/dsa">DSA/CP</Link>
             </nav>
           </header>
           <main className="site-main">{children}</main>
