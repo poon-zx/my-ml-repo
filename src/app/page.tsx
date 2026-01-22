@@ -13,12 +13,11 @@ export default function Home() {
         <div className="home-hero-content">
           <p className="eyebrow">Personal ML repository</p>
           <h1>
-            Poon&apos;s collection of interesting ML papers, concise notes, and
+            My collection of interesting ML papers, concise notes, and
             coding problems.
+            <span className="typing-cursor" aria-hidden="true" />
           </h1>
           <p className="lede">
-            A space for summaries, implementation notes, and small interactive
-            sketches that make concepts stick.
           </p>
           <div className="home-actions">
             <Link className="button" href="/papers">

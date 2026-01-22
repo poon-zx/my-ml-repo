@@ -183,6 +183,17 @@ img {
   margin: 0 0 16px;
 }
 
+.home-hero h1 .typing-cursor {
+  display: inline-block;
+  width: 0.55ch;
+  height: 0.95em;
+  margin-left: 0.15ch;
+  background: currentColor;
+  border-radius: 2px;
+  transform: translateY(0.08em);
+  animation: typing-blink 1s steps(1, end) infinite;
+}
+
 .lede {
   font-size: clamp(1.05rem, 0.6vw + 1rem, 1.25rem);
   color: var(--ink-700);
@@ -387,6 +398,17 @@ img {
   50% {
     transform: translateY(-3px);
     opacity: 1;
+  }
+}
+
+@keyframes typing-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  55%,
+  100% {
+    opacity: 0;
   }
 }
 
@@ -839,6 +861,149 @@ img {
 .patch-demo-embedding-value {
   font-size: 0.8rem;
   color: var(--ink-600);
+}
+
+.dqn-demo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 8px 0 16px;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+}
+
+.dqn-demo-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.dqn-demo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.dqn-demo-button {
+  border: 1px solid rgba(151, 115, 75, 0.35);
+  border-radius: 999px;
+  background: rgba(151, 115, 75, 0.15);
+  color: var(--ink-900);
+  padding: 8px 14px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.dqn-demo-button.is-ghost {
+  background: transparent;
+}
+
+.dqn-demo-button:hover {
+  background: rgba(151, 115, 75, 0.25);
+}
+
+.dqn-demo-world {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.dqn-demo-cell {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  min-height: 58px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+}
+
+.dqn-demo-cell.is-terminal {
+  background: rgba(151, 115, 75, 0.12);
+}
+
+.dqn-demo-cell.is-agent {
+  box-shadow: 0 0 0 2px rgba(151, 115, 75, 0.35);
+}
+
+.dqn-demo-terminal {
+  font-size: 0.75rem;
+  color: var(--ink-600);
+}
+
+.dqn-demo-agent {
+  font-size: 0.75rem;
+  color: var(--ink-900);
+  font-weight: 600;
+}
+
+.dqn-demo-panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.dqn-demo-panel h4 {
+  margin: 0 0 8px;
+}
+
+.dqn-demo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dqn-demo-qtable {
+  display: grid;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+}
+
+.dqn-demo-qheader,
+.dqn-demo-qrow {
+  display: grid;
+  grid-template-columns: 70px repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 10px;
+}
+
+.dqn-demo-qheader {
+  font-weight: 600;
+  background: rgba(151, 115, 75, 0.12);
+}
+
+.dqn-demo-qrow {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(151, 115, 75, 0.2);
+}
+
+.dqn-demo-qrow.is-current {
+  border-color: rgba(151, 115, 75, 0.6);
+  background: rgba(151, 115, 75, 0.15);
+}
+
+.dqn-demo-update h4 {
+  margin: 0 0 8px;
+}
+
+.dqn-demo-empty {
+  color: var(--ink-500);
+  font-style: italic;
 }
 
 .empty-state {
