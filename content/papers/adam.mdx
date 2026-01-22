@@ -1,0 +1,134 @@
+---
+title: "Adam: A Method for Stochastic Optimization"
+date: "22-01-2025"
+summary: "Adam (Adaptive Moment Estimation) is an optimization algorithm that adaptively adjusts learning rates per parameter by combining exponential moving averages of gradients (first moment) and squared gradients (second moment), with bias correction to achieve efficient stochastic optimization."
+tags: ["optimization", "gradient-descent", "adaptive-learning-rate", "momentum", "adam", "stochastic-optimization"]
+---
+
+### [Paper Link](https://arxiv.org/abs/1412.6980)
+
+# Key Definitions
+
+| Term | Definition |
+| --- | --- |
+| First-Order Gradients | - First-order gradients refer to the first derivatives of a function with respect to its parameters. In the context of optimization and machine learning, the first-order gradient of a loss function $f(\theta)$ with respect to the parameter vector $\theta$ is a vector that contains the partial derivatives of the function with respect to each parameter |
+| First Moment of the Gradients | - The first moment of the gradients refers to the mean or expected value of the gradients. In the Adam algorithm, it is computed as an exponential moving average of the gradients |
+| Second Moment of the Gradients | - The second moment of the gradients refers to the uncentered variance of the gradients, which is the expected value of the squared gradients. In the Adam algorithm, it is computed as an exponential moving average of the squared gradients |
+| Step Size Annealing | - Step size annealing (also known as learning rate decay) is a technique where the step size (or learning rate) used in gradient-based optimization algorithms is gradually reduced according to a pre-defined schedule as the training progresses<br />- The primary goal of step size annealing is to improve convergence to a minimum by taking smaller steps as the optimization algorithm approaches an optimal solution. This reduces the risk of overshooting and helps the algorithm settle into a local or global minimum |
+
+
+## Introduction
+- Adam (Adaptive Moment Estimation) is an optimization algorithm that helps machine learning models learn faster and more reliably
+- Key Advantages
+  1. Adapts learning rates automatically for each parameter
+  2. Works well with noisy data and sparse gradients
+  3. Requires minimal tuning for good results
+  4. Memory efficient as it only needs gradient information
+- Analogy: When finding the lowest point in a foggy valley, instead of taking random steps, you would
+  - Remember which directions seemed to go downhill recently (first moment)
+  - Remember how consistent those directions were (second moment)
+  - Take bigger steps when you're confident and smaller steps when uncertain
+
+## Algorithm
+- **Setup (Initialization)**
+  - Before starting, Adam requires the following hyperparameters:
+    - $\alpha$ (alpha): Learning rate, typically 0.001: controls overall step size
+    - $\beta_1$ (beta1): Usually 0.9: how much to trust recent gradients
+    - $\beta_2$ (beta2): Usually 0.999: how much to trust recent gradient magnitudes
+    - $\epsilon$ (epsilon): Tiny number like $10^{-8}$: prevents division by zero
+  - Initialize gradient statistics:
+    - $m_0, v_0$: Start at zero: will store gradient statistics
+    - $t$: Iteration counter, starts at 0
+- **The Update Loop**
+  - At each training step, Adam performs the following operations:
+    - **Calculate the gradient**: Compute $g_t = \nabla_\theta f_t(\theta_{t-1})$ — determines which direction parameters should move
+    - **Update momentum (first moment)**:
+      - $m_t = \beta_1 \times m_{t-1} + (1 - \beta_1) \times g_t$
+      - This creates a moving average of recent gradients, smoothing out noise
+    - **Update velocity (second moment)**:
+      - $v_t = \beta_2 \times v_{t-1} + (1 - \beta_2) \times g_t^2$
+      - This tracks how much gradients have been varying—higher variation means less certainty
+    - **Correct for initialization bias**:
+      - $\hat{m}_t = m_t / (1 - \beta_1^t)$
+      - $\hat{v}_t = v_t / (1 - \beta_2^t)$
+      - Since we started at zero, early estimates are biased downward. These corrections fix that
+    - **Update parameters**:
+      - $\theta_t = \theta_{t-1} - \alpha \times \hat{m}_t / (\sqrt{\hat{v}_t} + \epsilon)$
+      - Move parameters in the direction of $\hat{m}_t$, but scale by how certain we are (based on $\hat{v}_t$)
+
+- When you initialize the moment estimates at zero, they start artificially low. Without correction:
+  - Early updates would be too small
+  - The algorithm would learn slowly at first
+  - Performance would suffer unnecessarily
+- The correction terms $(1 - \beta_1^t)$ and $(1 - \beta_2^t)$ grow from near-zero toward 1, compensating for this initial bias. After many iterations, these terms approach 1 and have minimal effect.
+
+## Demo: Adam vs SGD playground
+
+<AdamOptimizerDemo />
+
+Use the controls to change the learning rates, beta values, and gradient noise.
+Toggle bias correction to see how early Adam steps change relative to SGD.
+
+**What to observe:**
+- The **target marker** (vertical line) shows the approximate minimum of the function f(x) = 0.2x² + 0.6 sin(1.5x). This is the ideal x value we're trying to reach.
+- Watch the **x position** for Adam vs SGD (the colored dots on the track)
+- Compare the **step** values in each panel: Adam adapts step sizes based on gradient history (via m̂/v̂), while SGD uses a fixed learning rate times the noisy gradient.
+- Check Adam's **m̂** and **v̂** readouts: these show the bias-corrected moments that determine Adam's adaptive step size. Early in training (low t), bias correction makes m̂ and v̂ larger, allowing bigger initial steps.
+- With noisy gradients, Adam typically converges more smoothly and reaches the minimum faster than SGD, thanks to its adaptive step sizing.
+
+## Key Properties
+- **Adaptive Step Sizes**
+  - Each parameter gets its own effective learning rate based on its gradient history
+  - Parameters with:
+    - Large, consistent gradients → smaller steps (to avoid overshooting)
+    - Small or noisy gradients → carefully scaled steps
+- **Natural Annealing**
+  - The effective step size is approximately: $\Delta_t \approx \alpha \times (\hat{m}_t / \sqrt{\hat{v}_t})$
+  - The ratio $\hat{m}_t / \sqrt{\hat{v}_t}$ is like a signal-to-noise ratio (SNR):
+    - High SNR → confident gradient estimate → larger steps
+    - Low SNR → uncertain gradient estimate → smaller steps
+  - Near the optimum, gradients get smaller and noisier (low SNR), so Adam automatically takes smaller steps—this is "automatic annealing"
+- **Scale Invariance**
+  - If you multiply all gradients by constant $c$:
+    - First moment $m_t$ scales by $c$
+    - Second moment $v_t$ scales by $c^2$
+    - The ratio $m_t / \sqrt{v_t}$ stays the same
+  - This means Adam behaves consistently regardless of how you scale your loss function or features
+- **Bounded Step Sizes**
+  - The maximum step size is approximately bounded by: $|\Delta_t| \leq \alpha \times (1 - \beta_1) / \sqrt{1 - \beta_2}$
+  - With default settings ($\beta_1 = 0.9$, $\beta_2 = 0.999$), this is roughly $3.16 \times \alpha$
+  - This bound provides stability—steps can't explode unexpectedly
+
+## Convergence Guarantees
+- Adam comes with theoretical guarantees in the online learning framework
+- **Regret** measures how much worse Adam performs compared to the best fixed parameters in hindsight:
+  - $R(T) = \sum_{t=1}^T [f(\theta_t) - f(\theta^*)]$
+- **Theorem**: Adam achieves $O(\sqrt{T})$ regret, meaning:
+  - $R(T) / T \to 0$ as $T \to \infty$
+- Over time, Adam's average performance approaches the best possible fixed strategy. This is as good as the best-known optimization methods in this setting
+
+## Comparison with Related Methods
+- AdaGrad: Adapts learning rates but accumulates all past gradients, causing learning rates to shrink too aggressively over time
+- RMSProp: Like Adam but without momentum (only uses second moment). Works well but converges slower
+- Adam = RMSProp + Momentum + Bias Correction: Combines the best of both worlds with proper initialization handling
+
+## Code
+```python
+import numpy as np
+
+def adam_optimizer(f, grad, x0, learning_rate=0.001, beta1=0.9, beta2=0.999, epsilon=1e-8, num_iterations=10):
+    x = x0 # shape is (N, 0)
+    m = np.zeros_like(x)
+    v = np.zeros_like(x)
+
+    # first moment (mean of past gradients) and second moment (uncentered variance of past gradients)
+    for t in range(1, num_iterations + 1):
+        g = grad(x)
+        m = beta1 * m + (1 - beta1) * g
+        v = beta2 * v + (1 - beta2) * g**2
+        m_hat = m / (1 - beta1**t)
+        v_hat = v / (1 - beta2**t)
+        x = x - learning_rate * m_hat / (np.sqrt(v_hat) + epsilon)
+
+    return x
+```

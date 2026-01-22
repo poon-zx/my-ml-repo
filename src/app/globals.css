@@ -1164,6 +1164,150 @@ img {
   text-align: right;
 }
 
+.adam-demo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 8px 0 16px;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+}
+
+.adam-demo-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.adam-demo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.adam-demo-button {
+  border: 1px solid rgba(151, 115, 75, 0.35);
+  border-radius: 999px;
+  background: rgba(151, 115, 75, 0.15);
+  color: var(--ink-900);
+  padding: 8px 14px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.adam-demo-button.is-ghost {
+  background: transparent;
+}
+
+.adam-demo-button:hover {
+  background: rgba(151, 115, 75, 0.25);
+}
+
+.adam-demo-track {
+  position: relative;
+  height: 22px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(151, 115, 75, 0.08);
+  margin-bottom: 10px;
+}
+
+.adam-demo-marker {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  width: 2px;
+  background: rgba(151, 115, 75, 0.6);
+}
+
+.adam-demo-dot {
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+}
+
+.adam-demo-dot.is-adam {
+  background: rgba(151, 115, 75, 0.85);
+  border: 1px solid rgba(151, 115, 75, 0.85);
+}
+
+.adam-demo-dot.is-sgd {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(151, 115, 75, 0.7);
+}
+
+.adam-demo-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+}
+
+.adam-demo-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.adam-demo-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.adam-demo-legend-dot.is-adam {
+  background: rgba(151, 115, 75, 0.85);
+}
+
+.adam-demo-legend-dot.is-sgd {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(151, 115, 75, 0.7);
+}
+
+.adam-demo-legend-dot.is-target {
+  background: rgba(151, 115, 75, 0.6);
+}
+
+.adam-demo-panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.adam-demo-panel {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  color: var(--ink-700);
+}
+
+.adam-demo-panel h4 {
+  margin: 0 0 10px;
+  font-size: 0.9rem;
+  color: var(--ink-900);
+}
+
+.adam-demo-metric {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.adam-demo-metric span:first-child {
+  color: var(--ink-600);
+}
+
 .fenwick-demo-meta {
   display: flex;
   flex-wrap: wrap;
