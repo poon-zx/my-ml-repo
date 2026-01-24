@@ -4,6 +4,8 @@ import AttentionDemo from "./AttentionDemo";
 import DqnReplayDemo from "./DqnReplayDemo";
 import FenwickTreeDemo from "./FenwickTreeDemo";
 import GanLatentMapDemo from "./GanLatentMapDemo";
+import KmpFailureTableDemo from "./KmpFailureTableDemo";
+import KmpSearchDemo from "./KmpSearchDemo";
 import PatchEmbeddingDemo from "./PatchEmbeddingDemo";
 
 export const mdxComponents: MDXComponents = {
@@ -12,5 +14,7 @@ export const mdxComponents: MDXComponents = {
   DqnReplayDemo,
   FenwickTreeDemo,
   GanLatentMapDemo,
+  KmpFailureTableDemo,
+  KmpSearchDemo,
   PatchEmbeddingDemo,
 };

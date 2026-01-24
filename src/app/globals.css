@@ -1444,6 +1444,160 @@ img {
   color: var(--ink-600);
 }
 
+.kmp-demo {
+  margin: 20px 0;
+}
+
+.kmp-demo-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.kmp-demo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 8px 0 12px;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+}
+
+.kmp-demo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.kmp-demo-button {
+  border: 1px solid rgba(151, 115, 75, 0.35);
+  border-radius: 999px;
+  background: rgba(151, 115, 75, 0.15);
+  color: var(--ink-900);
+  padding: 8px 14px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.kmp-demo-button.is-ghost {
+  background: transparent;
+}
+
+.kmp-demo-button:hover {
+  background: rgba(151, 115, 75, 0.25);
+}
+
+.kmp-demo-step {
+  margin: 8px 0 12px;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+}
+
+.kmp-demo-row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 14px;
+}
+
+.kmp-demo-row-label {
+  font-size: 0.85rem;
+  color: var(--ink-700);
+  padding-top: 6px;
+}
+
+.kmp-demo-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.kmp-demo-cell {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.85);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+}
+
+.kmp-demo-index {
+  font-size: 0.7rem;
+  color: var(--ink-500);
+}
+
+.kmp-demo-char {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink-900);
+}
+
+.kmp-demo-cell.is-i {
+  background: rgba(151, 115, 75, 0.18);
+  box-shadow: 0 0 0 2px rgba(151, 115, 75, 0.3);
+}
+
+.kmp-demo-cell.is-j {
+  border-color: rgba(88, 120, 175, 0.6);
+  box-shadow: 0 0 0 2px rgba(88, 120, 175, 0.2);
+}
+
+.kmp-demo-cell.is-both {
+  background: rgba(151, 115, 75, 0.22);
+  box-shadow: 0 0 0 2px rgba(88, 120, 175, 0.35);
+}
+
+.kmp-demo-cell.is-set {
+  background: rgba(151, 115, 75, 0.18);
+  box-shadow: 0 0 0 2px rgba(151, 115, 75, 0.3);
+}
+
+.kmp-demo-cell.is-current.is-match {
+  background: rgba(93, 150, 120, 0.18);
+  box-shadow: 0 0 0 2px rgba(93, 150, 120, 0.35);
+}
+
+.kmp-demo-cell.is-current.is-mismatch {
+  background: rgba(190, 90, 90, 0.18);
+  box-shadow: 0 0 0 2px rgba(190, 90, 90, 0.35);
+}
+
+.kmp-demo-cell.is-matched {
+  background: rgba(151, 115, 75, 0.1);
+}
+
+.kmp-demo-cell.is-found {
+  background: rgba(93, 150, 120, 0.22);
+  box-shadow: 0 0 0 2px rgba(93, 150, 120, 0.35);
+}
+
+.kmp-demo-cell.is-empty {
+  background: transparent;
+  border: 1px dashed rgba(151, 115, 75, 0.2);
+  color: var(--ink-500);
+}
+
+.kmp-demo-cell.is-pointer {
+  background: rgba(151, 115, 75, 0.18);
+  box-shadow: 0 0 0 2px rgba(151, 115, 75, 0.3);
+}
+
+.kmp-demo-cell.is-fallback-from {
+  border-color: rgba(190, 90, 90, 0.6);
+}
+
+.kmp-demo-cell.is-fallback-to {
+  border-color: rgba(93, 150, 120, 0.6);
+}
+
 .empty-state {
   color: var(--ink-500);
   font-style: italic;

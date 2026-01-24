@@ -1,0 +1,203 @@
+---
+title: "Knuth-Morris-Pratt (KMP) String Matching"
+date: "24-01-2025"
+summary: "KMP algorithm efficiently finds all occurrences of a pattern in text in O(n + m) time by using a failure table to avoid redundant comparisons when mismatches occur."
+tags: ["string-matching"]
+---
+
+## Problem
+You need to find all occurrences of a pattern string with a larger text.
+
+For example, finding "ABABC" in "ABABDABABCABAB" should return position 5 (0-indexed).
+
+The naive approach compares the pattern at every position in the text:
+- For each position i in text, check if pattern matches starting at i
+- If a mismatch occurs, move to position i+1 and start over
+- This takes O(n*m) time in the worst case, where n is the text length and m is the pattern length
+
+The problem with the naive approach is that it discards information. When we find "ABABD" but fail at 'D', we've learned that "ABAB" matched, but we throw away this knowledge and restart from scratch.
+
+KMP solves this by remembering what we've matched, achieving **O(n + m)** time complexity.
+
+## The Solution
+
+When a mismatch occurs, we don't need to go back to the beginning. Instead, we can skip ahead based on the pattern's internal structure.
+
+Consider searching for "ABABC" in "ABABDABABC":
+```
+Text:    A B A B D A B A B C
+Pattern: A B A B C
+         ✓ ✓ ✓ ✓ ✗
+```
+
+We matched "ABAB" before failing at 'D'. Notice that "ABAB" has an internal overlap: the prefix "AB" equals the suffix "AB". 
+
+Instead of restarting from position 1, we can shift the pattern to align this overlap:
+```
+Text:    A B A B D A B A B C
+Pattern:     A B A B C
+             ↑
+         (resume checking here)
+```
+
+We've already verified that positions 2-3 in the text are "AB", so we don't need to check them again. This is the core of KMP's efficiency.
+
+## The Failure Table
+
+The failure table (also called LPS - Longest Proper Prefix which is also Suffix) preprocesses the pattern to encode these skip distances.
+
+For each position i in the pattern, `b[i]` tells us: "If we've matched up to position i-1 and then fail, what's the length of the longest proper prefix of pattern[0...i-1] that's also a suffix?"
+
+Let's build the table for "ABABC":
+
+| i | pattern[0...i-1] | b[i] | Explanation |
+|---|------------------|------|-------------|
+| 0 | "" | -1 | Empty string, special case |
+| 1 | "A" | 0 | No proper prefix equals suffix |
+| 2 | "AB" | 0 | No proper prefix equals suffix |
+| 3 | "ABA" | 1 | "A" is both prefix and suffix |
+| 4 | "ABAB" | 2 | "AB" is both prefix and suffix |
+| 5 | "ABABC" | 0 | No proper prefix equals suffix |
+
+**Key observations:**
+- `b[i] = j` means pattern[0...j-1] matches pattern[i-j...i-1]
+- When we fail at position i, we can resume matching at position b[i]
+- The value -1 indicates we should move to the next text position
+
+## Building the Failure Table
+
+The failure table is built using KMP on itself! We match the pattern against itself:
+```
+Step-by-step for "ABABC":
+
+i=0, j=-1: b[0]=-1 (base case)
+
+i=1, j=0: pattern[0]='A' vs pattern[0]='A' → match
+         b[1]=0
+
+i=2, j=0: pattern[1]='B' vs pattern[0]='A' → mismatch
+         j=b[0]=-1, then increment
+         b[2]=0
+
+i=3, j=0: pattern[2]='A' vs pattern[0]='A' → match
+         b[3]=1
+
+i=4, j=1: pattern[3]='B' vs pattern[1]='B' → match
+         b[4]=2
+
+i=5, j=2: pattern[4]='C' vs pattern[2]='A' → mismatch
+         j=b[2]=0: pattern[4]='C' vs pattern[0]='A' → mismatch
+         j=b[0]=-1, then increment
+         b[5]=0
+```
+
+## Playground: Failure table builder
+
+<KmpFailureTableDemo />
+
+## Searching with KMP
+
+Once we have the failure table, searching proceeds similarly:
+```
+Search for "ABABC" in "ABABDABABC":
+
+i=0, j=0: text[0]='A' vs pattern[0]='A' → match, j=1
+i=1, j=1: text[1]='B' vs pattern[1]='B' → match, j=2
+i=2, j=2: text[2]='A' vs pattern[2]='A' → match, j=3
+i=3, j=3: text[3]='B' vs pattern[3]='B' → match, j=4
+i=4, j=4: text[4]='D' vs pattern[4]='C' → mismatch
+         j=b[4]=2 (skip to position 2)
+i=4, j=2: text[4]='D' vs pattern[2]='A' → mismatch
+         j=b[2]=0
+i=4, j=0: text[4]='D' vs pattern[0]='A' → mismatch
+         j=b[0]=-1
+i=5, j=0: text[5]='A' vs pattern[0]='A' → match, j=1
+i=6, j=1: text[6]='B' vs pattern[1]='B' → match, j=2
+i=7, j=2: text[7]='A' vs pattern[2]='A' → match, j=3
+i=8, j=3: text[8]='B' vs pattern[3]='B' → match, j=4
+i=9, j=4: text[9]='C' vs pattern[4]='C' → match, j=5
+         j==m, found match at position 5!
+```
+
+## Playground: KMP search walkthrough
+
+<KmpSearchDemo />
+
+## Time Complexity Analysis
+
+**Building the failure table: O(m)**
+- Each iteration either increments i or decrements j
+- i increases from 0 to m, contributing m increments
+- j can only decrease when it's positive, and each increment of i increases j by at most 1
+- Therefore j can decrease at most m times total
+- Total operations: O(m)
+
+**Searching: O(n)**
+- Similar amortized analysis: i goes from 0 to n, j can decrease at most n times
+- Total operations: O(n)
+
+**Total: O(n + m)** with O(m) space for the failure table.
+
+## Code (C++)
+
+```cpp
+// Returns a vector of all positions in 'text' where 'pattern' begins.
+std::vector<int> kmp_search(const std::string &text, const std::string &pattern) {
+    int n = text.size(), m = pattern.size();
+    if (m == 0) return {};
+    // build “failure” table
+    std::vector<int> b(m+1);
+    b[0] = -1;
+    int i = 0, j = -1;
+    while (i < m) {
+        while (j >= 0 && pattern[i] != pattern[j]) j = b[j];
+        ++i; ++j;
+        b[i] = j;
+    }
+    // search
+    std::vector<int> matches;
+    i = 0; j = 0;
+    while (i < n) {
+        while (j >= 0 && text[i] != pattern[j]) j = b[j];
+        ++i; ++j;
+        if (j == m) {
+            matches.push_back(i - j);
+            j = b[j];
+        }
+    }
+    return matches;
+}
+```
+
+## Code (Python)
+```python
+def kmp_search(text, pattern):
+    n, m = len(text), len(pattern)
+    if m == 0:
+        return []
+    
+    # Build failure table
+    b = [0] * (m + 1)
+    b[0] = -1
+    i, j = 0, -1
+    while i < m:
+        while j >= 0 and pattern[i] != pattern[j]:
+            j = b[j]
+        i += 1
+        j += 1
+        b[i] = j
+    
+    # Search
+    matches = []
+    i, j = 0, 0
+    while i < n:
+        while j >= 0 and text[i] != pattern[j]:
+            j = b[j]
+        i += 1
+        j += 1
+        if j == m:
+            matches.append(i - j)
+            j = b[j]
+    
+    return matches
+```
