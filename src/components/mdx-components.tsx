@@ -11,6 +11,7 @@ import KosarajuSccDemo from "./KosarajuSccDemo";
 import KmpFailureTableDemo from "./KmpFailureTableDemo";
 import KmpSearchDemo from "./KmpSearchDemo";
 import PatchEmbeddingDemo from "./PatchEmbeddingDemo";
+import RopeFrequencyDemo from "./RopeFrequencyDemo";
 
 export const mdxComponents: MDXComponents = {
   AdamOptimizerDemo,
@@ -25,4 +26,5 @@ export const mdxComponents: MDXComponents = {
   KmpFailureTableDemo,
   KmpSearchDemo,
   PatchEmbeddingDemo,
+  RopeFrequencyDemo,
 };

@@ -1,0 +1,80 @@
+---
+title: "RoFormer: Enhanced Transformer with Rotary Position Embedding"
+date: "25-01-2025"
+summary: "A deep dive into Rotary Position Embedding (RoPE), an elegant solution for encoding positional information in transformers that enables better length extrapolation and relative position modeling"
+tags: ["transformers", "position-encoding", "attention", "nlp"]
+---
+
+### [Paper Link](https://arxiv.org/abs/2104.09864)
+
+## The Position Encoding Problem
+- Transformers process sequences as sets, losing all information about token order
+- Position encodings solve this by injecting positional information into the model
+- Absolute position encodings (like sinusoidal or learned embeddings) add positional information directly to token embeddings
+  - While the model can theoretically learn to extract relative distances from these absolute positions, this information isn't directly available in the attention computation
+  - Rather it is mixed with semantic content, and the model must learn to disentangle them
+
+## Rotation in Complex Space
+- When token A at position 3 attends to token B at position 7, we want the attention score to somehow "know" they're 4 positions apart.
+- The key insight is what if we could make the dot product (attention score) itself encode relative distance
+- RoPE's key idea to solve this is to **encode positions as rotations in complex space**
+  - Rotate the query vector at position $m$ by angle $m\theta$
+  - Rotate the key vector at position $n$ by angle $n\theta$
+  - When computing their dot product (attention score), the result depends on $(m-n)\theta$ (the relative position)
+- When computing attention between two tokens at positions $\textit{m}$ and $\textit{n}$, instead of adding position information to the embeddings, RoPE rotates the query and key vectors by angles proportional to their positions
+  - The dot product between rotated vectors naturally depends only on the relative position $\textit{m - n}$
+- Mathematically, for a 2D subspace, rotating a vector $\mathbf{x} = (x_1, x_2)$ at position $m$ means:
+$$
+f(\mathbf{x}, m) = \begin{pmatrix} \cos(m\theta) & -\sin(m\theta) \\ \sin(m\theta) & \cos(m\theta) \end{pmatrix} \begin{pmatrix} x_1 \\ x_2 \end{pmatrix}
+$$
+where $\theta$ is a base frequency
+- When you compute the inner product between vectors rotated by positions $m$ and $n$, the rotation matrices combine to give a rotation of angle $(m-n)\theta$, encoding their relative distance directly in the attention computation
+
+## Extending to Higher Dimensions
+- Above is the 2D rotation example, but real transformer models work in high dimensions (512, 1024, or more)
+- RoPE extends this rotation idea by splitting the $d$-dimensional space into $d/2$ pairs of coordinates, each with its own rotation frequency
+  - This essentially treats the high-dimensional space as **multiple independent 2D planes**
+- This creates a spectrum of frequencies, similar to the original sinusoidal encodings but applied differently
+- For dimension pair $i$, the frequency is $\theta_i = 10000^{-2i/d}$
+  - This creates a geometric progression of frequencies
+  - Lower frequencies capture long-range dependencies, while higher frequencies encode fine-grained positional differences
+- This entire operation can be implemented efficiently as a simple element-wise operations with precomputed sine and cosine values
+
+Here is a small playground that shows how multiple 2D planes rotate at different rates as you change positions $m$ and $n$:
+
+<RopeFrequencyDemo />
+
+This view highlights how the same position gap produces fast oscillations in high-frequency planes and slow, smoother rotations in low-frequency planes, which together give RoPE both fine-grained and long-range sensitivity.
+
+## Advantages of RoPE
+- **Relative position modeling**: The attention score between positions $m$ and $n$ depends only on their difference $m - n$, not their absolute values
+  - This is baked directly into the mechanism rather than requiring the model to learn to extract relative distances from absolute position signals
+- **Length extrapolation**: Because RoPE encodes relative positions through rotation angles, models can often generalize to sequence lengths longer than those seen during training
+- **No additional parameters**: Unlike learned position embeddings, RoPE doesn't add any trainable parameters
+
+## Code Implementation
+
+In practice, RoPE is applied only to the query and key vectors in the attention mechanism, not to values. For a query or key vector at position $m$:
+
+```python
+def apply_rotary_pos_emb(x, position, dim):
+    # Split into pairs
+    x_even = x[..., 0::2]
+    x_odd = x[..., 1::2]
+    
+    # Compute rotation angles for each dimension pair
+    freqs = 1.0 / (10000 ** (torch.arange(0, dim, 2) / dim))
+    angles = position * freqs
+    
+    # Apply rotation
+    cos_vals = torch.cos(angles)
+    sin_vals = torch.sin(angles)
+    
+    x_rotated_even = x_even * cos_vals - x_odd * sin_vals
+    x_rotated_odd = x_even * sin_vals + x_odd * cos_vals
+    
+    # Interleave back
+    return torch.stack([x_rotated_even, x_rotated_odd], dim=-1).flatten(-2)
+```
+
+The rotation is applied independently to each attention head, allowing different heads to potentially learn different positional sensitivities.

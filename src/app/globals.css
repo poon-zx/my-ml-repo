@@ -894,6 +894,145 @@ img {
   color: var(--ink-600);
 }
 
+.rope-demo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 8px 0 16px;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+}
+
+.rope-demo-hint {
+  margin: 4px 0 16px;
+  font-size: 0.9rem;
+  color: var(--ink-700);
+}
+
+.rope-demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+}
+
+.rope-demo-plane {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.75);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rope-demo-plane-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.rope-demo-plane-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.rope-demo-plane-subtitle {
+  font-size: 0.8rem;
+  color: var(--ink-600);
+}
+
+.rope-demo-plane-theta {
+  font-size: 0.8rem;
+  color: var(--ink-600);
+  font-family: var(--font-mono);
+}
+
+.rope-demo-plane-svg {
+  width: 100%;
+  max-width: 200px;
+  align-self: center;
+  display: block;
+}
+
+.rope-demo-plane-circle {
+  fill: rgba(151, 115, 75, 0.08);
+  stroke: rgba(151, 115, 75, 0.3);
+  stroke-dasharray: 4 4;
+}
+
+.rope-demo-axis {
+  stroke: rgba(151, 115, 75, 0.3);
+  stroke-width: 1;
+}
+
+.rope-demo-vector {
+  stroke-width: 2.2;
+  stroke-linecap: round;
+}
+
+.rope-demo-vector.is-base {
+  stroke: rgba(151, 115, 75, 0.4);
+}
+
+.rope-demo-vector.is-query {
+  stroke: var(--accent-600);
+}
+
+.rope-demo-vector.is-key {
+  stroke: var(--ink-700);
+}
+
+.rope-demo-point.is-query {
+  fill: var(--accent-600);
+}
+
+.rope-demo-point.is-key {
+  fill: var(--ink-700);
+}
+
+.rope-demo-values {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: var(--ink-600);
+}
+
+.rope-demo-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+}
+
+.rope-demo-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rope-demo-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.rope-demo-legend-dot.is-base {
+  background: rgba(151, 115, 75, 0.5);
+}
+
+.rope-demo-legend-dot.is-query {
+  background: var(--accent-600);
+}
+
+.rope-demo-legend-dot.is-key {
+  background: var(--ink-700);
+}
+
 .dqn-demo-meta {
   display: flex;
   flex-wrap: wrap;
