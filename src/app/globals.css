@@ -1598,6 +1598,165 @@ img {
   border-color: rgba(93, 150, 120, 0.6);
 }
 
+.bert-demo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 10px 0;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+}
+
+.bert-demo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin: 10px 0 12px;
+}
+
+.bert-demo-button {
+  border: 1px solid rgba(151, 115, 75, 0.35);
+  border-radius: 999px;
+  background: rgba(151, 115, 75, 0.15);
+  color: var(--ink-900);
+  padding: 8px 14px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.bert-demo-button:hover {
+  background: rgba(151, 115, 75, 0.25);
+}
+
+.bert-demo-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: var(--ink-700);
+}
+
+.bert-demo-empty {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: var(--ink-600);
+}
+
+.bert-demo-token-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.bert-demo-token {
+  border: 1px solid rgba(151, 115, 75, 0.35);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  background: rgba(151, 115, 75, 0.12);
+  color: var(--ink-900);
+}
+
+.bert-demo-token.is-special {
+  border-style: dashed;
+  background: rgba(151, 115, 75, 0.08);
+}
+
+.bert-demo-token.is-seg-a {
+  background: rgba(151, 115, 75, 0.16);
+}
+
+.bert-demo-token.is-seg-b {
+  background: rgba(151, 115, 75, 0.08);
+}
+
+.bert-demo-token.is-active {
+  box-shadow: 0 0 0 2px rgba(151, 115, 75, 0.35);
+}
+
+.bert-demo-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 0.9rem;
+}
+
+.bert-demo-table th,
+.bert-demo-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.bert-demo-table tbody tr.is-masked td {
+  background: rgba(151, 115, 75, 0.12);
+}
+
+.bert-demo-table tbody tr.is-selected td {
+  background: rgba(151, 115, 75, 0.15);
+}
+
+.bert-demo-index-table {
+  margin-top: 8px;
+}
+
+.bert-demo-embed {
+  margin-top: 12px;
+}
+
+.bert-demo-embed-grid {
+  display: grid;
+  grid-template-columns: auto repeat(4, minmax(48px, 1fr));
+  gap: 6px 10px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.bert-demo-embed-row {
+  display: contents;
+}
+
+.bert-demo-embed-header {
+  font-size: 0.8rem;
+  color: var(--ink-700);
+  font-weight: 600;
+}
+
+.bert-demo-embed-label {
+  font-size: 0.8rem;
+  color: var(--ink-700);
+}
+
+.bert-demo-embed-cell {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--ink-800);
+  background: rgba(151, 115, 75, 0.08);
+  border-radius: 6px;
+  padding: 4px 6px;
+}
+
+.bert-demo-embed-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.bert-demo-embed-bar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.bert-demo-embed-value {
+  font-size: 0.8rem;
+  color: var(--ink-700);
+}
+
 .empty-state {
   color: var(--ink-500);
   font-style: italic;

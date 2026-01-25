@@ -1,5 +1,8 @@
 import type { MDXComponents } from "mdx/types";
 import AdamOptimizerDemo from "./AdamOptimizerDemo";
+import BertInputEmbeddingDemo from "./BertInputEmbeddingDemo";
+import BertMlmMaskingDemo from "./BertMlmMaskingDemo";
+import BertNspDemo from "./BertNspDemo";
 import AttentionDemo from "./AttentionDemo";
 import DqnReplayDemo from "./DqnReplayDemo";
 import FenwickTreeDemo from "./FenwickTreeDemo";
@@ -10,6 +13,9 @@ import PatchEmbeddingDemo from "./PatchEmbeddingDemo";
 
 export const mdxComponents: MDXComponents = {
   AdamOptimizerDemo,
+  BertInputEmbeddingDemo,
+  BertMlmMaskingDemo,
+  BertNspDemo,
   AttentionDemo,
   DqnReplayDemo,
   FenwickTreeDemo,
