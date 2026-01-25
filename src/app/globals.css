@@ -1761,3 +1761,258 @@ img {
   color: var(--ink-500);
   font-style: italic;
 }
+
+.kosaraju-demo-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.kosaraju-demo-description {
+  display: flex;
+  align-items: flex-end;
+  font-size: 0.9rem;
+  color: var(--ink-700);
+}
+
+.kosaraju-demo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 8px 0 12px;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+}
+
+.kosaraju-demo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.kosaraju-demo-step {
+  margin: 8px 0 12px;
+  font-size: 0.9rem;
+  color: var(--ink-700);
+}
+
+.kosaraju-demo-panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.kosaraju-demo-panel {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.kosaraju-demo-panel h4 {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+}
+
+.kosaraju-demo-panel h5 {
+  margin: 0 0 6px;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+}
+
+.kosaraju-demo-graph {
+  width: 100%;
+  height: 240px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  color: rgba(115, 85, 56, 0.6);
+}
+
+.kosaraju-demo-edge {
+  stroke: rgba(115, 85, 56, 0.35);
+  stroke-width: 1.4;
+}
+
+.kosaraju-demo-edge.is-active {
+  stroke: rgba(115, 85, 56, 0.85);
+  stroke-width: 2.4;
+}
+
+.kosaraju-demo-node {
+  fill: rgba(255, 255, 255, 0.95);
+  stroke: rgba(115, 85, 56, 0.5);
+  stroke-width: 1.5;
+  transition: fill 150ms ease, stroke 150ms ease;
+}
+
+.kosaraju-demo-node.is-visited {
+  fill: rgba(138, 106, 70, 0.16);
+}
+
+.kosaraju-demo-node.is-stack {
+  stroke: rgba(115, 85, 56, 0.85);
+  stroke-width: 2.4;
+}
+
+.kosaraju-demo-node.is-active {
+  stroke: rgba(115, 85, 56, 1);
+  stroke-width: 3;
+}
+
+.kosaraju-demo-node.is-assigned {
+  fill: var(--component-fill, rgba(138, 106, 70, 0.22));
+  stroke: var(--component-stroke, rgba(138, 106, 70, 0.7));
+}
+
+.kosaraju-demo-node-text {
+  font-size: 12px;
+  fill: var(--ink-900);
+  font-family: var(--font-tech), var(--font-mono);
+}
+
+.kosaraju-demo-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--ink-700);
+}
+
+.kosaraju-demo-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kosaraju-demo-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(115, 85, 56, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.kosaraju-demo-legend-dot.is-visited {
+  background: rgba(138, 106, 70, 0.16);
+}
+
+.kosaraju-demo-legend-dot.is-stack {
+  border: 2px solid rgba(115, 85, 56, 0.85);
+}
+
+.kosaraju-demo-legend-dot.is-active {
+  border: 2px solid rgba(115, 85, 56, 1);
+}
+
+.kosaraju-demo-legend-dot.is-scc {
+  background: rgba(138, 106, 70, 0.22);
+  border: 1px solid rgba(138, 106, 70, 0.6);
+}
+
+.kosaraju-demo-adj-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.kosaraju-demo-adj-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kosaraju-demo-adj-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+}
+
+.kosaraju-demo-adj-row.is-active {
+  color: var(--ink-900);
+  font-weight: 600;
+}
+
+.kosaraju-demo-adj-node {
+  min-width: 18px;
+  font-weight: 600;
+}
+
+.kosaraju-demo-adj-arrow {
+  color: var(--ink-500);
+}
+
+.kosaraju-demo-adj-neighbors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.kosaraju-demo-adj-empty {
+  color: var(--ink-500);
+  font-style: italic;
+}
+
+.kosaraju-demo-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.kosaraju-demo-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(151, 115, 75, 0.35);
+  background: rgba(151, 115, 75, 0.12);
+  font-size: 0.8rem;
+  color: var(--ink-900);
+}
+
+.kosaraju-demo-chip.is-active {
+  background: rgba(151, 115, 75, 0.25);
+  border-color: rgba(151, 115, 75, 0.55);
+}
+
+.kosaraju-demo-chip.is-stack {
+  border-color: rgba(115, 85, 56, 0.7);
+  background: rgba(115, 85, 56, 0.15);
+}
+
+.kosaraju-demo-components {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.kosaraju-demo-component {
+  border: 1px solid rgba(151, 115, 75, 0.2);
+  border-radius: 10px;
+  padding: 8px;
+  background: rgba(151, 115, 75, 0.06);
+}
+
+.kosaraju-demo-component.is-current {
+  border-style: dashed;
+}
+
+.kosaraju-demo-component-title {
+  font-size: 0.85rem;
+  color: var(--ink-700);
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* input[type="range"] {
+  accent-color: rgba(223, 25, 150, 0.4); 
+} */

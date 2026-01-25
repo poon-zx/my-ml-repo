@@ -1,0 +1,247 @@
+---
+title: "Kosaraju Variants"
+date: "25-01-2025"
+summary: "Kosaraju's algorithm finds all strongly connected components in a directed graph in O(V + E) time using two DFS passes: first to order nodes by finish time, then on the reversed graph to identify each SCC."
+tags: ["graph", "scc", "kosaraju", "dfs"]
+---
+
+## Introduction to Strongly Connected Components (SCCs)
+
+![scc](/dsa/kosaraju/scc.png)
+*Image Credits: https://www.geeksforgeeks.org/dsa/strongly-connected-components/*
+
+- Strongly Connected Components (SCCs) are maximal subgraphs within a directed graph where every vertex is reachable from every other vertex in the same component
+- Within an SCC, a bidirectional path exists between all pairs of nodes
+- If a node cannot reach any others, it forms its own SCC
+
+## Variant 1: Count Number of SCCs
+
+### How Kosaraju's Algorithm Works
+
+- **Core Idea**: Uses two passes of Depth-First Search (DFS) to identify all strongly connected components in a directed graph
+
+- **Step 1 - First DFS Pass (Original Graph)**:
+  - Perform DFS on the original graph starting from any unvisited node
+  - Track the order in which nodes finish their DFS exploration
+  - Store nodes in a stack or list based on their finish times (nodes that finish later are added last)
+  - This ordering ensures that nodes in earlier SCCs finish before nodes in later SCCs
+
+- **Step 2 - Graph Reversal**:
+  - Create a reversed graph by flipping all edge directions
+  - If there was an edge from u to v, now there's an edge from v to u
+  - This reversal preserves SCCs (nodes strongly connected in the original graph remain strongly connected in the reversed graph)
+
+- **Step 3 - Second DFS Pass (Reversed Graph)**:
+  - Process nodes in reverse finish order from Step 1 (start with nodes that finished last)
+  - Perform DFS on the reversed graph for each unvisited node
+  - Each DFS traversal in this step discovers exactly one SCC
+  - Count the number of times a new DFS is initiated to get the total number of SCCs
+
+- **Why It Works**:
+  - The first DFS creates an ordering where if there's a path from SCC A to SCC B, then nodes in A finish after nodes in B
+  - Processing in reverse order on the reversed graph ensures we explore each SCC independently
+  - The reversal prevents crossing between different SCCs during the second DFS pass
+
+- **Time Complexity**: O(V + E) where V is the number of vertices and E is the number of edges
+- **Space Complexity**: O(V) for storing the finish order and reversed graph
+
+## Playground: Kosaraju walkthrough
+
+<KosarajuSccDemo />
+
+Use the step controls to watch the first DFS build the finish order stack, then
+switch to the reversed graph to see each SCC get collected in pass 2.
+
+### Code (C++)
+```cpp
+int kosaraju_count_scc(const vector<vector<int>>& adj) {
+    int n = adj.size();
+    vector<bool> vis(n, false);
+    vector<int> order;
+    order.reserve(n);
+
+    // 1) DFS to build finish order
+    function<void(int)> dfs1 = [&](int u) {
+        vis[u] = true;
+        for (int v : adj[u]) {
+            if (!vis[v]) dfs1(v);
+        }
+        order.push_back(u);
+    };
+    for (int i = 0; i < n; i++) {
+        if (!vis[i]) dfs1(i);
+    }
+
+    // 2) Build the reversed graph
+    vector<vector<int>> radj(n);
+    for (int u = 0; u < n; u++) {
+        for (int v : adj[u]) {
+            radj[v].push_back(u);
+        }
+    }
+
+    // 3) DFS in reverse finish order on the reversed graph
+    fill(vis.begin(), vis.end(), false);
+    int scc_count = 0;
+    function<void(int)> dfs2 = [&](int u) {
+        vis[u] = true;
+        for (int v : radj[u]) {
+            if (!vis[v]) dfs2(v);
+        }
+    };
+    for (int i = n - 1; i >= 0; --i) {
+        int u = order[i];
+        if (!vis[u]) {
+            dfs2(u);
+            scc_count++;
+        }
+    }
+
+    return scc_count;
+}
+```
+
+### Code (Python)
+```python
+def kosaraju_count_scc(adj):
+    n = len(adj)
+    vis = [False] * n
+    order = []
+
+    # 1) DFS to build finish order
+    def dfs1(u):
+        vis[u] = True
+        for v in adj[u]:
+            if not vis[v]:
+                dfs1(v)
+        order.append(u)
+    
+    for i in range(n):
+        if not vis[i]:
+            dfs1(i)
+
+    # 2) Build the reversed graph
+    radj = [[] for _ in range(n)]
+    for u in range(n):
+        for v in adj[u]:
+            radj[v].append(u)
+
+    # 3) DFS in reverse finish order on the reversed graph
+    vis = [False] * n
+    scc_count = 0
+    
+    def dfs2(u):
+        vis[u] = True
+        for v in radj[u]:
+            if not vis[v]:
+                dfs2(v)
+    
+    for i in range(n - 1, -1, -1):
+        u = order[i]
+        if not vis[u]:
+            dfs2(u)
+            scc_count += 1
+
+    return scc_count
+```
+
+## Variant 2: Find Size of Largest SCC
+
+- Slightly modified variant that instead keeps track of the largest SCC
+
+### Code (C++)
+```cpp
+int kosaraju_max_scc_size(const vector<vector<int>>& adj) {
+    int n = adj.size();
+    vector<bool> vis(n, false);
+    vector<int> order;
+    order.reserve(n);
+
+    // 1) DFS to build finish order
+    function<void(int)> dfs1 = [&](int u) {
+        vis[u] = true;
+        for (int v : adj[u]) {
+            if (!vis[v]) dfs1(v);
+        }
+        order.push_back(u);
+    };
+    for (int i = 0; i < n; i++) {
+        if (!vis[i]) dfs1(i);
+    }
+
+    // 2) Build the reversed graph
+    vector<vector<int>> radj(n);
+    for (int u = 0; u < n; u++) {
+        for (int v : adj[u]) {
+            radj[v].push_back(u);
+        }
+    }
+
+    // 3) DFS in reverse finish order on the reversed graph, tracking component sizes
+    fill(vis.begin(), vis.end(), false);
+    int max_size = 0;
+    function<int(int)> dfs2_count = [&](int u) {
+        vis[u] = true;
+        int cnt = 1;
+        for (int v : radj[u]) {
+            if (!vis[v]) cnt += dfs2_count(v);
+        }
+        return cnt;
+    };
+    for (int i = n - 1; i >= 0; --i) {
+        int u = order[i];
+        if (!vis[u]) {
+            int sz = dfs2_count(u);
+            max_size = max(max_size, sz);
+        }
+    }
+
+    return max_size;
+}
+```
+
+### Code (Python)
+```python
+def kosaraju_max_scc_size(adj):
+    n = len(adj)
+    vis = [False] * n
+    order = []
+
+    # 1) DFS to build finish order
+    def dfs1(u):
+        vis[u] = True
+        for v in adj[u]:
+            if not vis[v]:
+                dfs1(v)
+        order.append(u)
+    
+    for i in range(n):
+        if not vis[i]:
+            dfs1(i)
+
+    # 2) Build the reversed graph
+    radj = [[] for _ in range(n)]
+    for u in range(n):
+        for v in adj[u]:
+            radj[v].append(u)
+
+    # 3) DFS in reverse finish order on the reversed graph, tracking component sizes
+    vis = [False] * n
+    max_size = 0
+    
+    def dfs2_count(u):
+        vis[u] = True
+        cnt = 1
+        for v in radj[u]:
+            if not vis[v]:
+                cnt += dfs2_count(v)
+        return cnt
+    
+    for i in range(n - 1, -1, -1):
+        u = order[i]
+        if not vis[u]:
+            sz = dfs2_count(u)
+            max_size = max(max_size, sz)
+
+    return max_size
+```
