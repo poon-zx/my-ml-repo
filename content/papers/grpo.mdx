@@ -1,0 +1,208 @@
+---
+title: "DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models"
+date: "27-01-2025"
+summary: "DeepSeekMath introduces a 7B parameter model that achieves state-of-the-art mathematical reasoning by continuing pre-training on 120B math-related tokens from Common Crawl and introducing Group Relative Policy Optimization (GRPO)"
+tags: ["mathematical-reasoning", "reinforcement-learning", "grpo"]
+---
+
+### [Paper Link](https://arxiv.org/abs/2402.03300)
+
+# Key Definitions
+
+| Term | Definition |
+| --- | --- |
+| Chain-of-Thought (CoT) Prompting | - A prompting technique where the model is encouraged to show its step-by-step reasoning process when solving problems, rather than directly producing an answer<br />- This helps improve performance on complex reasoning tasks by decomposing the solution into intermediate reasoning steps |
+| Program-of-Thought (PoT) | - A problem-solving approach where the model generates a Python program to solve mathematical problems, often leveraging libraries like `sympy` and `math` for intricate computations<br />- The generated program is then executed to obtain the final answer, improving reliability on symbolic and numeric tasks |
+| Proximal Policy Optimization (PPO) | - An actor-critic reinforcement learning algorithm widely used for fine-tuning large language models<br />- It trains both a policy model (actor) and a value function (critic) and uses a clipped objective to stabilize updates while optimizing behavior through reward signals |
+| Rejection Sampling Fine-Tuning (RFT) | - A fine-tuning method where the model generates multiple candidate outputs for each input prompt or question<br />- Only the candidates that produce correct or high-quality answers (according to some verifier or metric) are selected and used for further training, biasing the model toward better responses |
+| Common Crawl | - A publicly available repository of web crawl data containing billions of web pages across multiple languages<br />- It serves as a rich source for extracting large-scale, domain-diverse training data for pretraining and continued training of language models |
+| fastText | - A lightweight library developed by Facebook AI Research for efficient text classification and representation learning<br />- It learns vector representations of words and can quickly classify text by training on character n-grams, making it particularly useful for large-scale text filtering tasks and handling out-of-vocabulary words |
+
+# Introduction
+- Mathematical reasoning remains one of the most challenging tasks for large language models due to its complex, structured, and multi-step nature
+- Current state-of-the-art challenges
+  1. **Data Quality**: Existing mathematical corpora are limited in size and diversity
+  2. **Training Efficiency**: Traditional reinforcement learning methods like PPO require substantial computational resources due to the need for a separate critic model
+
+## DeepSeekMath Contributions
+1. **DeepSeekMath Corpus**: A meticulously curated dataset of 120B mathematical tokens extracted from Common Crawl through an iterative fastText-based classification pipeline
+2. **Group Relative Policy Optimization (GRPO)**: A memory-efficient variant of PPO that eliminates the need for a critic model while maintaining effectiveness
+
+The resulting DeepSeekMath 7B model achieves performance approaching GPT-4 and SOTA results among all open-source models
+
+# Building the DeepSeekMath Corpus
+
+![DeepSeekMath corpus](/papers/grpo/deepseekmath-corpus.png)
+
+**Step 1: Initial Seed Corpus**
+- Started with OpenWebMath (13.6B tokens), a collection of high-quality mathematical web texts
+- Used as positive examples for training a fastText classifier
+
+**Step 2: Train FastText Classifier**
+- Positive examples: 500,000 data points from OpenWebMath
+- Negative examples: 500,000 random web pages from Common Crawl
+
+**Step 3: Recall Mathematical Web Pages**
+- Applied the classifier to deduplicated Common Crawl (40B HTML pages)
+- Ranked pages by fastText scores
+- Preserved only top-ranking pages
+
+**Step 4: Domain Discovery and Manual Annotation**
+- Organized Common Crawl into domains (web pages with same base URL)
+- Identified math-related domains (e.g., mathoverflow.net) where >10% of pages were collected
+- Manually annotated URL paths within these domains that contain mathematical content
+- Added uncollected pages from annotated URLs to seed corpus
+
+**Step 5: Iteration**
+- Trained improved fastText model with enriched seed corpus
+- Repeated process for multiple iterations
+
+## Results
+After 4 iterations:
+- **35.5M mathematical web pages** collected
+- **120B tokens** total
+
+## Quality Advantages
+1. **High Quality**: Models trained on it outperform those trained on existing corpora (MathPile, OpenWebMath, Proof-Pile-2)
+2. **Multilingual**: Primarily English and Chinese, enabling strong performance on both language benchmarks
+3. **Large Scale**: Multiple times larger than existing mathematical corpora, enabling longer training without repetition
+
+## Decontamination
+
+To prevent benchmark contamination, the corpus underwent strict filtering:
+- Removed web pages containing 10-gram exact matches with benchmark questions/answers
+- For texts less than 10 grams but >=3 grams, used exact matching to filter contaminated pages
+
+# Model Architecture and Training
+## DeepSeekMath-Base 7B
+
+- Started from **DeepSeek-Coder-Base-v1.5 7B** (rather than a general language model)
+- Code training prior to math training proved beneficial for mathematical reasoning
+- Surpasses all open-source base models by >10% on MATH
+- Multilingual advantage: significantly better on Chinese benchmarks
+
+## Supervised Fine-Tuning: DeepSeekMath-Instruct 7B
+- Created a diverse mathematical instruction-tuning dataset with 776K examples including mutiple solution formats such as CoT, PoT and hybrid of both
+- Achievements
+  - Surpasses all open-source 7B-70B models on MATH
+  - Competitive with 70B models despite being much smaller
+  - Approaches 60% accuracy on MATH with tool use
+
+# Group Relative Policy Optimization (GRPO)
+
+![GRPO vs PPO](/papers/grpo/grpo.png)
+
+## Motivation: The Problem with PPO
+
+Traditional PPO has two main limitations for LLM fine-tuning:
+1. **Memory Overhead**: Requires training a separate value function (critic model) of comparable size to the policy model, doubling memory requirements
+2. **Training Complexity**: The value function approximation can be challenging when only the final token receives a reward signal
+
+## GRPO: A More Efficient Alternative
+- GRPO eliminates the critic model and instead uses group statistics as a baseline for advantage estimation.
+- For each question, sample multiple outputs (a "group") from the policy model, then use the group's average reward as the baseline instead of a learned value function.
+
+## Algorithm
+
+**For each training question $q$**:
+
+1. **Sample group of outputs**: Generate a group of $G$ outputs $\{o_1, o_2, \dots, o_G\}$ from the current policy $\pi_\theta$
+2. **Score outputs**: Use the reward model to obtain rewards $\{r_1, r_2, \dots, r_G\}$
+3. **Normalize rewards**: 
+   - $\hat{r}_i = \dfrac{r_i - \operatorname{mean}(r)}{\operatorname{std}(r)}$
+4. **Calculate advantages**: 
+   - **Outcome supervision**: $\hat{A}_{i,t} = \hat{r}_i$ (same for all tokens in output $o_i$)
+   - **Process supervision**: $\hat{A}_{i,t} = \sum_{k = t}^{T_i} \hat{r}_{i,k}$ (sum of normalized step rewards from position $t$ onward)
+5. **Optimize policy**: Maximize the GRPO objective with clipping and KL penalty
+
+## GRPO Objective Function
+
+$$
+J_{\mathrm{GRPO}}(\theta)
+= \mathbb{E}_{q, \{o_i\}} \left[
+  \frac{1}{G} \sum_i \frac{1}{|o_i|} \sum_t
+    \min\left(
+      \frac{\pi_\theta(o_{i,t} \mid q, o_i)}{\pi_{\theta_\text{old}}(o_{i,t} \mid q, o_i)} \hat{A}_{i,t},
+      \text{clip}(r_{i,t}, 1 - \varepsilon, 1 + \varepsilon) \hat{A}_{i,t}
+    \right)
+  - \beta \, D_\mathrm{KL}\!\left(\pi_\theta \,\|\, \pi_\text{ref}\right)
+\right]
+$$
+
+Where:
+- $\varepsilon$: clipping parameter for stability
+- $\beta$: KL penalty coefficient
+- $\pi_\text{ref}$: reference model (prevents over-optimization)
+
+**Breaking down the components:**
+
+1. **Outer expectation $\mathbb{E}_{q, \{o_i\}}$**: Average over all questions $q$ and their sampled output groups $\{o_1, o_2, \dots, o_G\}$
+
+2. **Group averaging $\dfrac{1}{G} \sum_i$**: Average the objective across all $G$ outputs in each group
+
+3. **Token averaging $\dfrac{1}{|o_i|} \sum_t$**: Average across all tokens in each output
+
+4. **Probability ratio $\dfrac{\pi_\theta(o_{i,t} \mid q, o_i)}{\pi_{\theta_\text{old}}(o_{i,t} \mid q, o_i)}$**: Measures how much the new policy differs from the old policy for token $t$
+   - Ratio $> 1$: New policy assigns higher probability (encouraging this token)
+   - Ratio $< 1$: New policy assigns lower probability (discouraging this token)
+
+5. **Advantage $\hat{A}_{i,t}$**: The normalized reward signal that determines direction and magnitude of update
+   - Positive advantage: Reinforce this token (increase probability)
+   - Negative advantage: Penalize this token (decrease probability)
+
+6. **Clipping function $\operatorname{clip}(\cdot, 1 - \varepsilon, 1 + \varepsilon)$**: Prevents the policy from changing too drastically in one update
+   - Limits ratio to range $\left[1 - \varepsilon, 1 + \varepsilon\right]$ (typically $\varepsilon = 0.2$)
+   - If advantage is positive: clips ratio at $(1 + \varepsilon)$ to prevent over-optimization
+   - If advantage is negative: clips ratio at $(1 - \varepsilon)$ to prevent excessive penalization
+
+7. **min operation**: Takes the more conservative of the clipped and unclipped objectives
+   - Ensures stable training by preventing large policy updates
+
+8. **KL divergence penalty $\beta \, D_\mathrm{KL}(\pi_\theta \,\|\, \pi_\text{ref})$**: Keeps the updated policy close to the reference policy
+   - $\beta$ controls the strength of this regularization
+   - Prevents the policy from drifting too far and "forgetting" what it learned during SFT
+
+**Intuition**: The objective encourages the model to increase probabilities of tokens that led to high rewards (positive advantages) while decreasing probabilities of tokens that led to low rewards (negative advantages), but with safeguards (clipping and KL penalty) to ensure training remains stable.
+
+## Demo: GRPO update playground
+
+<GrpoPlaygroundDemo />
+
+Use the sliders to see how group normalization and clipping shape updates:
+- Increase **reward std** to amplify advantage magnitudes after normalization
+- Push **ratio drift** or lower **epsilon** to see more clipping
+- Raise **KL beta** to dampen aggressive policy updates
+- Hit **Resample group** to compare different batches
+
+## Code
+```python
+from datasets import load_dataset
+from trl import GRPOTrainer
+from trl.rewards import accuracy_reward
+
+dataset = load_dataset("trl-lib/DeepMath-103K", split="train")
+
+trainer = GRPOTrainer(
+    model="Qwen/Qwen2-0.5B-Instruct",
+    reward_funcs=accuracy_reward,
+    train_dataset=dataset,
+)
+trainer.train()
+```
+
+# Paper's Key Insights and Findings
+1. **Code Training Benefits Mathematical Reasoning**
+- Code pre-training significantly improves program-aided mathematical reasoning
+- Two-stage training (code → math) is best for reasoning without tools
+- Mixed training mitigates catastrophic forgetting and synergizes coding + math abilities
+
+2. **ArXiv Papers Are Surprisingly Ineffective**
+- Trained models on arXiv-only corpora (MathPile, ArXiv-RedPajama) show no notable improvements on mathematical benchmarks
+- Some cases even showed performance degradation
+- Caveat is that this may be more useful at larger model scales (tested on 1.3B and 7B models) and may be effective for other tasks (e.g. theorem informalization)
+
+3. **RL improves Maj@K but not Pass@K**
+- Definitions
+  - **Pass@K**: Percentage of problems where at least one of K samples is correct (measures raw capability)
+  - **Maj@K**: Percentage of problems where majority of K samples are correct (measures output distribution robustness)
+- This means that RL does not necessarily improve fundamental capabilities, rather it makes the output distribution more robust and consistent

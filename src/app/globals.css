@@ -1176,6 +1176,111 @@ img {
   font-style: italic;
 }
 
+.grpo-demo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 8px 0 16px;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+}
+
+.grpo-demo-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.grpo-demo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.grpo-demo-button {
+  border: 1px solid rgba(151, 115, 75, 0.35);
+  border-radius: 999px;
+  background: rgba(151, 115, 75, 0.15);
+  color: var(--ink-900);
+  padding: 8px 14px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.grpo-demo-button.is-ghost {
+  background: transparent;
+}
+
+.grpo-demo-button:hover {
+  background: rgba(151, 115, 75, 0.25);
+}
+
+.grpo-demo-seed {
+  font-size: 0.85rem;
+  color: var(--ink-600);
+}
+
+.grpo-demo-hint {
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+  color: var(--ink-600);
+}
+
+.grpo-demo-table {
+  display: grid;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--ink-700);
+  overflow-x: auto;
+}
+
+.grpo-demo-row {
+  display: grid;
+  grid-template-columns: 70px repeat(6, minmax(80px, 1fr)) 90px;
+  gap: 6px;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(151, 115, 75, 0.2);
+}
+
+.grpo-demo-row span {
+  font-variant-numeric: tabular-nums;
+}
+
+.grpo-demo-row.is-clipped {
+  border-color: rgba(151, 115, 75, 0.6);
+  background: rgba(151, 115, 75, 0.14);
+}
+
+.grpo-demo-header {
+  font-weight: 600;
+  color: var(--ink-900);
+  background: rgba(151, 115, 75, 0.12);
+  border-color: transparent;
+}
+
+.grpo-demo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(151, 115, 75, 0.35);
+  border-radius: 999px;
+  padding: 2px 10px;
+  font-size: 0.75rem;
+  color: var(--ink-700);
+  background: rgba(151, 115, 75, 0.12);
+}
+
+.grpo-demo-badge.is-on {
+  color: var(--ink-900);
+  background: rgba(151, 115, 75, 0.25);
+}
+
 .gan-demo-meta {
   display: flex;
   flex-wrap: wrap;

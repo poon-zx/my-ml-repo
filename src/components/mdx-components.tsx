@@ -7,6 +7,7 @@ import AttentionDemo from "./AttentionDemo";
 import DqnReplayDemo from "./DqnReplayDemo";
 import FenwickTreeDemo from "./FenwickTreeDemo";
 import GanLatentMapDemo from "./GanLatentMapDemo";
+import GrpoPlaygroundDemo from "./GrpoPlaygroundDemo";
 import KosarajuSccDemo from "./KosarajuSccDemo";
 import KmpFailureTableDemo from "./KmpFailureTableDemo";
 import KmpSearchDemo from "./KmpSearchDemo";
@@ -22,6 +23,7 @@ export const mdxComponents: MDXComponents = {
   DqnReplayDemo,
   FenwickTreeDemo,
   GanLatentMapDemo,
+  GrpoPlaygroundDemo,
   KosarajuSccDemo,
   KmpFailureTableDemo,
   KmpSearchDemo,
