@@ -15,6 +15,9 @@ import PatchEmbeddingDemo from "./PatchEmbeddingDemo";
 import RopeFrequencyDemo from "./RopeFrequencyDemo";
 
 export const mdxComponents: MDXComponents = {
+  a: (props) => (
+    <a {...props} target="_blank" rel="noreferrer noopener" />
+  ),
   AdamOptimizerDemo,
   BertInputEmbeddingDemo,
   BertMlmMaskingDemo,
